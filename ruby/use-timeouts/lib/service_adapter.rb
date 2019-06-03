@@ -1,19 +1,21 @@
 require 'net/http'
 
 class ServiceAdapter
+  DEFAULT_TIMEOUT = 5
+
   def initialize(uri_string)
     @uri = URI(uri_string)
     @http = Net::HTTP.new(@uri.host, @uri.port)
     configure
   end
 
-  def configure(max_retries: 0, timeout: 5)
+  def configure(max_retries: 0, all_timeout: DEFAULT_TIMEOUT)
     @http.finish if @http.started?
 
     @http.max_retries = max_retries
-    @http.open_timeout = timeout
-    @http.read_timeout = timeout
-    @http.write_timeout = timeout
+    @http.open_timeout = all_timeout
+    @http.read_timeout = all_timeout
+    @http.write_timeout = all_timeout
     @http.use_ssl = true if @uri.scheme == 'https'
 
     @http.start

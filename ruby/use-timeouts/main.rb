@@ -1,13 +1,11 @@
-require './lib/service_adapter'
+require_relative './lib/github_adapter'
 
-class GithubAdapter < ServiceAdapter
-  # TODO json mixin
+if __FILE__ == $0
+  configured_timeout = ARGV[0].to_f
 
-  def initialize
-    super('https://api.github.com')
-  end
+  github = GithubAdapter.new
+  github.configure(all_timeout: configured_timeout) if configured_timeout > 0
 
-  def repositories
-    get('/repositories')
-  end
+  repos = github.repositories
+  puts repos.map { |r| r['name'] }
 end
