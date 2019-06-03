@@ -1,1 +1,1 @@
-ruby app.rb
+ruby main.rb
