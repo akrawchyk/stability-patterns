@@ -1,11 +1,13 @@
 require_relative './lib/github_adapter'
 
-if __FILE__ == $0
+if $PROGRAM_NAME == __FILE__
   configured_timeout = ARGV[0].to_f
 
-  github = GithubAdapter.new
-  github.configure(all_timeout: configured_timeout) if configured_timeout > 0
+  options = {}
+  options[:timeout] = configured_timeout if configured_timeout.positive?
+  github = GithubAdapter.new(options)
 
-  repos = github.repositories
-  puts repos.map { |r| r['name'] }
+  repo_names = github.repositories.map { |repo| repo['name'] }
+
+  puts(repo_names)
 end
