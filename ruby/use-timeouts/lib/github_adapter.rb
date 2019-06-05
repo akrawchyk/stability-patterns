@@ -1,7 +1,7 @@
 require 'json'
-require_relative './service_adapter'
+require_relative './http_service_adapter'
 
-class GithubAdapter < ServiceAdapter
+class GithubAdapter < HTTPServiceAdapter
   def initialize(options)
     super('https://api.github.com', options)
   end

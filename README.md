@@ -4,7 +4,7 @@ Example implementations of the stability patterns in _Release It!: Design and De
 
 ## Patterns
 
-* Use Timeouts [WIP]
+* Use Timeouts
 * Circuit Breaker
 * Bulkheads
 * Steady State

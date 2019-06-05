@@ -1,6 +1,6 @@
 require 'net/http'
 
-class ServiceAdapter
+class HTTPServiceAdapter
   OPTION_DEFAULTS = {
     max_retries: 0,
     timeout: 5
@@ -22,7 +22,7 @@ class ServiceAdapter
     start
   end
 
-  def get(path)
+  def get(path = '/')
     request(Net::HTTP::Get.new(path))
   end
 
