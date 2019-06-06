@@ -8,7 +8,6 @@ class TestHTTPServiceAdapter < Test::Unit::TestCase
 
   def test_default_options
     instance = HTTPServiceAdapter.new(@test_uri_string)
-    default_options = instance.options
     assert_equal(instance.options[:max_retries], 0)
     assert_equal(instance.options[:timeout], 5)
   end
