@@ -16,7 +16,7 @@ jobs:
       - run:
           name: start test server
           command: |
-            ruby ruby/test_server.rb 8000
+            ruby ruby/test_server.rb 8000 &
 
       - run:
           name: run tests
