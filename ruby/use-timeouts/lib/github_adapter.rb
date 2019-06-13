@@ -9,8 +9,8 @@ class GithubAdapter < HTTPServiceAdapter
   def repositories
     body = get('/repositories').read_body
     JSON.parse(body)
-  rescue TimeoutError => e
-    puts e.message
+  rescue TimeoutError => error
+    puts error.message
     []
   end
 end

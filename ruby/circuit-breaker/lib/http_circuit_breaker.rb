@@ -7,8 +7,7 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
   }.freeze
 
   def initialize(uri_string, options = {})
-    @options = OPTION_DEFAULTS.merge(options)
-    super(uri_string, @options)
+    super(uri_string, OPTION_DEFAULTS.merge(options))
     @failure_count = 0
     @last_failure_time = nil
   end
@@ -20,9 +19,9 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
       response = super
       reset
       response
-    rescue HTTPServiceAdapter::TimeoutError => error # TODO: handle Errno::ECONNREFUSED
+    rescue HTTPServiceAdapter::TimeoutError
       record_failure
-      raise HTTPCircuitBreaker::TimeoutError, error.message
+      raise
     end
   end
 
@@ -31,16 +30,16 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
     when :closed, :half_open
       yield
     when :open
-      raise HTTPCircuitBreaker::Open
-    else raise "Unexpected state: #{state}"
+      raise HTTPCircuitBreaker::OpenError
+    else
+      raise "Unexpected state: #{state}"
     end
   end
 
   def state
-    case
-    when try_request?
+    if try_request_after_cooldown?
       :half_open
-    when tripped_by_threshold?
+    elsif tripped_by_threshold?
       :open
     else
       :closed
@@ -48,14 +47,14 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
   end
 
   def tripped_by_threshold?
-    @failure_count >= @options[:failure_threshold]
+    @failure_count >= options[:failure_threshold]
   end
 
   def failure_cooldown_done?
-    (Time.now - @last_failure_time) > @options[:failure_timeout]
+    (Time.now - @last_failure_time) > options[:failure_timeout]
   end
 
-  def try_request?
+  def try_request_after_cooldown?
     tripped_by_threshold? && failure_cooldown_done?
   end
 
@@ -68,7 +67,7 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
     @failure_count = 0
   end
 
-  class HTTPCircuitBreaker::Open < StandardError; end
+  class HTTPCircuitBreaker::OpenError < StandardError; end
 
   class HTTPCircuitBreaker::TimeoutError < StandardError; end
 end
