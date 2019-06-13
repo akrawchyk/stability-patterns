@@ -1,5 +1,4 @@
 require 'net/http'
-require 'pry'
 
 class HTTPServiceAdapter
   OPTION_DEFAULTS = {
