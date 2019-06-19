@@ -6,6 +6,8 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
     failure_timeout: 5
   }.freeze
 
+  attr_reader :failure_count, :last_failure_time
+
   def initialize(uri_string, options = {})
     super(uri_string, OPTION_DEFAULTS.merge(options))
     @failure_count = 0
@@ -47,11 +49,11 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
   end
 
   def tripped_by_threshold?
-    @failure_count >= options[:failure_threshold]
+    failure_count >= options[:failure_threshold]
   end
 
   def failure_cooldown_done?
-    (Time.now - @last_failure_time) > options[:failure_timeout]
+    (Time.now - last_failure_time) > options[:failure_timeout]
   end
 
   def try_request_after_cooldown?
@@ -68,6 +70,4 @@ class HTTPCircuitBreaker < HTTPServiceAdapter
   end
 
   class HTTPCircuitBreaker::OpenError < StandardError; end
-
-  class HTTPCircuitBreaker::TimeoutError < StandardError; end
 end

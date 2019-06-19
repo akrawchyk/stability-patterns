@@ -59,5 +59,21 @@ class TestHTTPCircuitBreaker < Test::Unit::TestCase
     assert_raise(HTTPCircuitBreaker::OpenError) do
       instance.get('/timeout?s=0')
     end
+
+    def test_records_failure_count
+      instance = HTTPCircuitBreaker.new(@timeout_uri_string, timeout: 0.5, failure_threshold: 1, failure_timeout: 2)
+      assert_raise(HTTPServiceAdapter::TimeoutError) do
+        instance.get('/timeout?s=1')
+      end
+      assert_equal(instance.failure_count, 1)
+    end
+
+    def test_records_last_failure_time
+      instance = HTTPCircuitBreaker.new(@timeout_uri_string, timeout: 0.5, failure_threshold: 1, failure_timeout: 2)
+      assert_raise(HTTPServiceAdapter::TimeoutError) do
+        instance.get('/timeout?s=1')
+      end
+      assert_kindn_of(Time, instance.last_failure_time)
+    end
   end
 end
