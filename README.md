@@ -1,6 +1,7 @@
-# Stability Patterns
+# Stability Patterns [![CircleCI](https://circleci.com/gh/akrawchyk/stability-patterns.svg?style=shield)](https://circleci.com/gh/akrawchyk/stability-patterns)
 
 Example implementations of the stability patterns in _Release It!: Design and Deploy Production-Ready Software_ by Michael Nygard.
+
 
 ## Patterns
 
